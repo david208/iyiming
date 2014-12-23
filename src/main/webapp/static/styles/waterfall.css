@@ -1,0 +1,35 @@
+@charset "utf-8";
+/* CSS Document */
+
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.clearfix{display:inline-table;}/* Hides from IE-mac */
+*html .clearfix{height:1%;}
+.clearfix{display:block;}/* End hide from IE-mac */
+*+html .clearfix{min-height:1%;}
+body{font-family:"helvetica neue",arial,sans-serif;font-size:12px;color:#444;}
+.demo{width:1000px;margin:0 auto;}
+.demo h1{color:#3366cc;font-size:16px;height:35px;line-height:1.9;text-align:center;border-bottom:1px solid #E5E5E5;margin:0 0 10px 0;}
+#retop{position:fixed;bottom:10%;_position:absolute;width:25px;height:69px;background:url(images/topback.png) no-repeat;text-indent:-9em;overflow:hidden;display:none;}
+/**---------- 比较元素 ---------**/
+/**** 转变 ****/
+.transitions-enabled.masonry,.transitions-enabled.masonry .masonry-brick{-webkit-transition-duration:0.7s;-moz-transition-duration:0.7s;-o-transition-duration:0.7s;transition-duration:0.7s;}
+.transitions-enabled.masonry{-webkit-transition-property:height, width;-moz-transition-property:height, width;-o-transition-property:height, width;transition-property:height, width;}
+.transitions-enabled.masonry .masonry-brick{-webkit-transition-property:left, right, top;-moz-transition-property:left, right, top;-o-transition-property:left, right, top;transition-property:left, right, top;}
+/* 禁用容器上的转变 */
+.transitions-enabled.infinite-scroll.masonry{-webkit-transition-property:none;-moz-transition-property:none;-o-transition-property:none;transition-property:none;}
+/* 无限滚动装载机 */
+#infscr-loading{text-align:center;padding:10px;background:#000;opacity:0.8;filter:alpha(opacity=80);color:#FFF;-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
+#infscr-loading{position:fixed;bottom:0px;left:45%;z-index:9999;width:200px;}
+*html,*html body /* 修正IE6振动bug */{background-image:url(about:blank);background-attachment:fixed;}
+*html #infscr-loading{position:absolute;bottom:expression(eval(document.documentElement.scrollTop));}
+/* showpic */
+.showpic .actions{display:none;}
+.showpic:hover .actions{display:block;}
+.showpic:hover img{filter:alpha(opacity=70);-moz-opacity:0.7;-khtml-opacity:0.7;opacity:0.7;}
+.showpic{position:relative;float:left;margin:5px;_margin:5px 4px;border:solid 1px #ddd;width:236px;font-size:12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);-moz-box-shadow:0 1px 3px rgba(0,0,0,.3);-webkit-box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.showpic .picbox{padding:15px 15px 0;text-align:center;}
+.showpic p{line-height:22px;margin:10px 0 0 0;padding:5px 10px;border-top:solid 1px #F5F2F2;background:#FAFAFA;}
+.showpic .actions{position:absolute;top:5px;left:0;z-index:3;width:100%;}
+.showpic .actions .lefter{float:left;margin:0 0 0 5px;display:inline;}
+.showpic .actions .righter{float:right;}
+.showpic .actions .righter a{margin:0 5px 0 0;}

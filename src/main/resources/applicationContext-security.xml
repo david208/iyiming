@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+	<http use-expressions="true" entry-point-ref="loginUrlEntryPoint">
+		<access-denied-handler ref="accessDeniedHandler" />
+		<intercept-url pattern="/static/**" access="permitAll" />
+		<intercept-url pattern="/login" access="permitAll" />
+		<intercept-url pattern="/rest/**" access="permitAll" />
+		<intercept-url pattern="/file/**" access="permitAll" />
+		<intercept-url pattern="/download/**" access="permitAll" />
+		<intercept-url pattern="/get-validatepic" access="permitAll" />
+		<intercept-url pattern="/**" access="hasAnyRole('admin')" />
+
+		<custom-filter position="FORM_LOGIN_FILTER" ref="loginFilter" />
+
+		<custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
+
+		<remember-me user-service-ref="userDetailService"
+			key="8zan6t0GhyA4Nw1s21zDX55E0i9IVd36" token-validity-seconds="604800" />
+		<anonymous enabled="true" />
+	</http>
+
+	<beans:bean id="loginUrlEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/login"></beans:property>
+	</beans:bean>
+
+	<!-- 权限不足处理 -->
+	<beans:bean id="accessDeniedHandler"
+		class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+		<beans:property name="errorPage" value="/WEB-INF/error/403.jsp"></beans:property>
+	</beans:bean>
+
+	<authentication-manager alias="authenticationManager"
+		erase-credentials="false">
+		<authentication-provider user-service-ref='userDetailService'>
+			<password-encoder ref="bcryptEncoder" />
+		</authentication-provider>
+	</authentication-manager>
+	<beans:bean name="bcryptEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	<!-- 验证前台用户 -->
+	<beans:bean id="loginFilter"
+
+		class="com.scnet.iyiming.filter.WebAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="authenticationFailureHandler"
+			ref="failureHandler" />
+		<beans:property name="authenticationSuccessHandler"
+			ref="successHandler" />
+		<beans:property name="filterProcessesUrl" value="/j_spring_security_check" />
+	</beans:bean>
+
+	<beans:bean id="failureHandler"
+
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/login?errorMsg=1" />
+	</beans:bean>
+
+	<beans:bean id="successHandler"
+
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+		<beans:property name="alwaysUseDefaultTargetUrl" value="true" />
+		<beans:property name="defaultTargetUrl" value="/" />
+	</beans:bean>
+
+
+	<!-- 注销过滤器，完成前台用户注销时的定向功能 -->
+	<beans:bean id="logoutFilter"
+		class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<beans:constructor-arg value="/login" />
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:bean
+					class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+			</beans:list>
+		</beans:constructor-arg>
+		<beans:property name="filterProcessesUrl" value="/j_spring_security_logout" />
+	</beans:bean>
+
+
+
+</beans:beans>

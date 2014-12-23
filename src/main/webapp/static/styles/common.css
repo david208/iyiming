@@ -1,0 +1,46 @@
+html, body, div, span, table, tr, td, p, input, textarea {
+    margin: 0px;
+    padding: 0px;
+}
+
+a{
+	color:#0099FF;
+	text-decoration:none;
+}
+
+a:hover{
+	color:#0066FF;
+}
+
+.e_message {
+    font-size: 18px;
+    font-weight: bold;
+}
+.e_stack {
+    padding-left: 70px;
+    line-height: 20px;
+    font-size: 14px;
+    font-family: Courier New;
+    white-space: nowrap;
+}
+.e_class {
+}
+.e_file {
+    font-weight: bold;
+    color: #FF0000;
+}
+.item_span {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+.list_table {
+}
+.list_table_bar {
+}
+.list_table_tip {
+    border: 1px solid #0099FF;
+    background-color: #FFFFFF;
+    margin: 4px;
+    padding: 2px;
+}
