@@ -81,6 +81,27 @@ public class ProjectController {
 		outputStream.close();
 	}
 
+	@RequestMapping(value = "/deleteImage", method = RequestMethod.POST)
+	public @ResponseBody
+	ResultVo deleteImage(Long id) {
+		return projectService.deleteImage(id);
+
+	}
+	
+	@RequestMapping(value = "/topProject", method = RequestMethod.POST)
+	public @ResponseBody
+	ResultVo topProject(Long id) {
+		return projectService.topProject(id);
+
+	}
+	
+	@RequestMapping(value = "/cancelTopProject", method = RequestMethod.POST)
+	public @ResponseBody
+	ResultVo cancelTopProject(Long id) {
+		return projectService.cancelTopProject(id);
+
+	}
+	
 	@RequestMapping(value = "/releaseProject", method = RequestMethod.POST)
 	public @ResponseBody
 	ResultVo releaseProject(Long id) {

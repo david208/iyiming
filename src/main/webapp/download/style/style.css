@@ -48,6 +48,7 @@ MARGIN-LEFT: auto;vertical-align:middle;}
 
 /*=底部代码*/
 .foot {height:90px;  color: #fff;font-size: 16px; text-align:center; line-height:90px;}
+.tipss {height:20px;  color: #fff;font-size: 16px; text-align:center; line-height:20px;}
 .foot span { cursor:pointer; text-decoration:underline;}
 .scroll-pane p { color:black; line-height:24px;}
 .foot a{color:#fff;text-decoration:underline;}

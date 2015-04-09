@@ -71,6 +71,37 @@ input,select {
 				prefix : "€"
 			});
 	}
+	
+	var count = 1;
+	$(function() {
+		$("#add")
+				.click(
+						function() {
+							var c = count;
+							count = count + 1;
+							$("#imageLi" + c + "")
+									.after(
+											'<li id="imageLi'+count+'"><input class="fl txtnone ml20px" accept="image/*" type="file" value="" name=image'+count+'"  style="width: 200px; height: 30px;" /></li>');
+						});
+	});
+	
+	function deleteImage(id){
+		$.messager.confirm('确认对话框', '您确认删除此图吗？', function(r){
+			if (r){
+			  $.post("${ctx}/project/deleteImage",{id:id},function(data,textStatus){
+				  if (data.code == 0) {
+						$.messager.alert('信息', '提交成功', "info", function() {
+							$("#d"+id).parent().hide();
+						});
+					} else {
+						$.messager.alert('警告', '提交失败', "error");
+					}
+			  },"json")
+			}
+		});
+
+
+	}
 
 	function save() {
 		$(".easyui-validatebox").validatebox("enableValidation");
@@ -149,7 +180,7 @@ input,select {
 										<option value="其他">其他</option>
 								</select>
 							</span></li>
-							<li><span class="lt_lab_left fl clearfix">项目图片：</span> <c:if
+							<%-- 	<li><span class="lt_lab_left fl clearfix">项目图片：</span> <c:if
 									test="${not empty data.imageUrl}">
 									<a href="${ctx}/project/image/${data.id}" class="fl"
 										title="${data.name}" target="_blank"><img
@@ -157,7 +188,26 @@ input,select {
 										width=100 /></a>
 								</c:if> <input class="fl txtnone ml20px" accept="image/*" type="file"
 								value="" name="image" id="image"
-								style="width: 200px; height: 30px;" /></li>
+								style="width: 200px; height: 30px;" /></li> --%>
+
+							<c:forEach items="${data.images}" var="item" varStatus="i">
+								<li><span class="lt_lab_left fl clearfix">图片：</span> <c:if
+										test="${not empty item.imageUrl}">
+										<a href="${ctx}/project/image/${item.id}" class="fl"
+											title="${data.name}" target="_blank"><img
+											src="${ctx}/project/image/${item.id}" alt="项目图" height=100
+											width=100 /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<a onclick="deleteImage(${item.id})" href="#" id="d${item.id}"
+											class="easyui-linkbutton"
+											data-options="iconCls:'icon-remove'">删除</a>
+									</c:if></li>
+
+							</c:forEach>
+							<li id="imageLi1"><input class="fl txtnone ml20px"
+								accept="image/*" type="file" value="" name="image"
+								style="width: 200px; height: 30px;" /><a id="add"
+								href="javascript('void(0)')" class="easyui-linkbutton"
+								data-options="iconCls:'icon-add'">增加图片</a></li>
 							<li><span class="lt_label">项目详情：</span><span
 								class="lt_label_left"><textarea
 										class="easyui-validatebox" id="intro" name="intro" cols=60

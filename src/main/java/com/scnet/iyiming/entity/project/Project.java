@@ -1,8 +1,10 @@
 package com.scnet.iyiming.entity.project;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -47,6 +49,9 @@ public class Project extends VersionedAuditableIdEntity {
 	private Date finishDate;// 下架日期
 	private String amtType;// 货币类型
 	private Long attentionCount;
+	private String top = "1";
+
+	private List<Image> images = new ArrayList<Image>();
 
 	private Set<UserToProject> userToProjects = new HashSet<UserToProject>();
 
@@ -150,6 +155,25 @@ public class Project extends VersionedAuditableIdEntity {
 
 	public void setAttentionCount(Long attentionCount) {
 		this.attentionCount = attentionCount;
+	}
+
+	
+	@OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+	@JsonIgnore
+	public List<Image> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+
+	public String getTop() {
+		return top;
+	}
+
+	public void setTop(String top) {
+		this.top = top;
 	}
 
 }

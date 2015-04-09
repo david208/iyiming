@@ -4,11 +4,17 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Iterator;
+
+
 
 import com.google.common.base.Splitter;
 import com.google.common.io.ByteStreams;
@@ -134,6 +140,17 @@ public class FileUtil {
 			}
 
 		}
+	}
+	
+	public static byte[] downloadNio(String downloadPath) throws IOException{
+		RandomAccessFile file = new RandomAccessFile(downloadPath, "rw");// 构建下载文件
+		FileChannel fileChannel = file.getChannel();
+		ByteBuffer buffer = ByteBuffer.allocate(48);
+		int bytesRead = fileChannel.read(buffer);
+		while(bytesRead != -1){
+			buffer.flip();
+		}
+		return null;
 	}
 
 }

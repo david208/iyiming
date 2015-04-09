@@ -1,6 +1,7 @@
 package com.scnet.iyiming.vo.response;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,12 +32,13 @@ public class GetProjectListResp extends ResponseBody {
 		private String type;// 类型
 		private String country;// 国家
 		private Date releaseDate;// 发布日期
-		private String imageUrl;// 图片url
 		private String flowId;// 状态
 		private Long attentionCount;// 关注数
 		private String attentionFlag = "N";// 是否已关注 Y N
-		private String amtType;//货币类型
-		
+		private String amtType;// 货币类型
+
+		private List<Image> images = new ArrayList<Image>();
+
 		public String getName() {
 			return name;
 		}
@@ -85,14 +87,6 @@ public class GetProjectListResp extends ResponseBody {
 			this.releaseDate = releaseDate;
 		}
 
-		public String getImageUrl() {
-			return imageUrl;
-		}
-
-		public void setImageUrl(String imageUrl) {
-			this.imageUrl = imageUrl;
-		}
-
 		public String getFlowId() {
 			return flowId;
 		}
@@ -133,6 +127,25 @@ public class GetProjectListResp extends ResponseBody {
 			this.amtType = amtType;
 		}
 
+		public List<Image> getImages() {
+			return images;
+		}
+
+		public void setImages(List<Image> images) {
+			this.images = images;
+		}
+
+		public static class Image {
+			String url;
+
+			public String getUrl() {
+				return url;
+			}
+
+			public void setUrl(String url) {
+				this.url = url;
+			}
+		}
 	}
 
 }

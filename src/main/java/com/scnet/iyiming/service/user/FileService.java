@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.scnet.iyiming.constants.IYiMingConstants;
+import com.scnet.iyiming.entity.project.Image;
+import com.scnet.iyiming.entity.project.Project;
+import com.scnet.iyiming.service.project.ImageService;
 import com.scnet.iyiming.service.project.ProjectService;
 import com.scnet.iyiming.util.FileUtil;
 import com.scnet.iyiming.vo.ResponseBody;
@@ -26,6 +29,8 @@ public class FileService {
 	private UserService userService;
 	@Autowired
 	private ProjectService projectService;
+	@Autowired
+	private ImageService imageService;
 
 	public ResponseBody uploadAvatar(MultipartHttpServletRequest request) {
 		Long id = (Long) request.getSession().getAttribute(IYiMingConstants.SESSION_USER_ID);
@@ -55,10 +60,10 @@ public class FileService {
 	}
 
 	public byte[] getProjectImage(Long id) throws IOException {
-		if (StringUtils.isEmpty(projectService.findOne(id).getImageUrl()))
+		if (StringUtils.isEmpty(imageService.findOne(id).getImageUrl()))
 			return new byte[0];
 		else
-			return FileUtil.download(projectService.findOne(id).getImageUrl());
+			return FileUtil.download(imageService.findOne(id).getImageUrl());
 
 	}
 
@@ -71,8 +76,11 @@ public class FileService {
 			if (StringUtils.isEmpty(mpf.getOriginalFilename()))
 				continue;
 			try {
-				String imageUrl = FileUtil.upload(FileUtil.builderUploadPath("projectImage", id), FileUtil.builderNewFileName(mpf.getOriginalFilename()), mpf.getInputStream());
-				projectService.uploadImage(id, imageUrl);
+				Project project = projectService.findOne(id);
+				Image image = imageService.uploadImage(project);
+				String imageUrl = FileUtil.upload(FileUtil.builderUploadPath("projectImage", image.getId()), FileUtil.builderNewFileName(mpf.getOriginalFilename()), mpf.getInputStream());
+				image.setImageUrl(imageUrl);
+				project.getImages().add(image);
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new RuntimeException(e);

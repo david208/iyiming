@@ -89,4 +89,14 @@ public class PageFormVo implements Pageable {
 	public Pageable previousOrFirst() {
 		return hasPrevious() ? new PageFormVo(page - 2, rows, getSort()) : this;
 	}
+
+	public Sort getSortSet() {
+		return sortSet;
+	}
+
+	public void setSortSet(Sort sortSet) {
+		this.sortSet = sortSet;
+	}
+	
+	
 }

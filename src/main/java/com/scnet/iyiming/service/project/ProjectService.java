@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.scnet.iyiming.constants.F;
 import com.scnet.iyiming.constants.IYiMingConstants;
+import com.scnet.iyiming.entity.project.Image;
 import com.scnet.iyiming.entity.project.Project;
 import com.scnet.iyiming.entity.project.UserToProject;
 import com.scnet.iyiming.entity.user.User;
@@ -56,8 +58,16 @@ public class ProjectService {
 	private ProjectRepository projectRepository;
 	@Autowired
 	private FileService fileService;
+	@Autowired
+	private ImageService imageService;
 
 	private static List<String> projectFlowIds = Arrays.asList(F.Project.Release, F.Project.Finish);
+
+	private final Order Order1 = new Order(Direction.DESC, "top");
+	private final Order Order2 = new Order(Direction.DESC, "id");
+	private final Order order3 = new Order(Direction.fromString("asc"), "amt");
+	private final Order order4 = new Order(Direction.fromString("desc"), "amt");
+	private final Sort sort = new Sort(Order1, Order2);
 
 	@Autowired
 	private UserToProjectService userToProjectService;
@@ -67,6 +77,7 @@ public class ProjectService {
 	}
 
 	public Page<Project> queryProjectList(final QueryProjectVo vo) {
+		vo.setSortSet(sort);
 		Page<Project> page = projectRepository.findAll(new Specification<Project>() {
 			@Override
 			public Predicate toPredicate(Root<Project> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -119,11 +130,11 @@ public class ProjectService {
 	public ResponseBody getProjectList(final GetProjectListReq getProjectListReq, String contextPath, final Long id) {
 		Sort sort;
 		if (StringUtils.isEmpty(getProjectListReq.getAmtOrder()))
-			sort = new Sort(Direction.fromString("desc"), "id");
+			sort = new Sort(Order1, Order2);
 		else if (getProjectListReq.getAmtOrder().equals("A"))
-			sort = new Sort(Direction.fromString("asc"), "amt");
+			sort = new Sort(Order1, order3);
 		else
-			sort = new Sort(Direction.fromString("desc"), "amt");
+			sort = new Sort(Order1, order4);
 
 		Page<Project> page = projectRepository.findAll(new Specification<Project>() {
 			@Override
@@ -192,9 +203,11 @@ public class ProjectService {
 		List<GetProjectListResp.ProjectDetail> projectList = new ArrayList<GetProjectListResp.ProjectDetail>();
 		for (Project project : page.getContent()) {
 			GetProjectListResp.ProjectDetail projectDetail = new GetProjectListResp.ProjectDetail();
+			for (Image image : project.getImages()) {
+				image.setUrl(contextPath + "/file/getProjectImage/" + image.getId() + "/" + project.getVersion());
+			}
 			mapper.map(project, projectDetail);
 			projectDetail.setAttentionCount(userToProjectService.countByProjectAndFlowId(project));
-			projectDetail.setImageUrl(contextPath + "/file/getProjectImage/" + project.getId() + "/" + project.getVersion());
 			projectList.add(projectDetail);
 		}
 		GetProjectListResp getProjectListResp = new GetProjectListResp();
@@ -222,10 +235,12 @@ public class ProjectService {
 		}
 		GetProjectDetailResp getProjectDetailResp = new GetProjectDetailResp();
 		GetProjectListResp.ProjectDetail projectDetail = new GetProjectListResp.ProjectDetail();
+		for (Image image : project.getImages()) {
+			image.setUrl(contextPath + "/file/getProjectImage/" + image.getId() + "/" + project.getVersion());
+		}
 		mapper.map(project, projectDetail);
 		projectDetail.setAttentionCount(userToProjectService.countByProjectAndFlowId(project));
 		projectDetail.setAttentionFlag(attentionFlag);
-		projectDetail.setImageUrl(contextPath + "/file/getProjectImage/" + project.getId() + "/" + project.getVersion());
 		getProjectDetailResp.setProjectDetail(projectDetail);
 		return getProjectDetailResp;
 
@@ -242,6 +257,38 @@ public class ProjectService {
 
 		}
 
+	}
+
+	public ResultVo deleteImage(Long id) {
+		try {
+			imageService.deleteImage(id);
+			return new ResultVo(0, "删除成功");
+		} catch (Exception e) {
+			return new ResultVo(1, "删除失败");
+		}
+	}
+
+	public ResultVo topProject(Long id) {
+
+		try {
+			projectRepository.cancelTop();
+			Project project = projectRepository.findOne(id);
+			project.setTop("2");
+			return new ResultVo(0, "置顶成功");
+		} catch (Exception e) {
+			return new ResultVo(1, "置顶失败");
+		}
+	}
+
+	public ResultVo cancelTopProject(Long id) {
+
+		try {
+			Project project = projectRepository.findOne(id);
+			project.setTop("1");
+			return new ResultVo(0, "取消置顶成功");
+		} catch (Exception e) {
+			return new ResultVo(1, "取消置顶失败");
+		}
 	}
 
 	public ResultVo finishProject(Long id) {

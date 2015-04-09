@@ -80,6 +80,17 @@
 										align : 'center'
 									},
 									{
+										field : 'top',
+										title : '置顶',
+										align : 'center',
+										formatter : function(value, rec) {
+											if (value == '2')
+												return "√";
+											else
+												return "";
+										}
+									},
+									{
 										field : 'attentionCount',
 										title : '关注数',
 										align : 'center'
@@ -123,6 +134,19 @@
 												link += '<a href="javascript:release('
 														+ rec.id
 														+ ');">发布项目</a>';
+											}
+											if (rec.flowId == '发布') {
+												if (rec.top == '2') {
+													link += "|";
+													link += '<a href="javascript:cTop('
+															+ rec.id
+															+ ');">取消置顶</a>';
+												} else {
+													link += "|";
+													link += '<a href="javascript:topUp('
+															+ rec.id
+															+ ');">置顶</a>';
+												}
 											}
 											if (rec.attentionCount > 0) {
 												if (link != "")
@@ -199,6 +223,45 @@
 
 					} else {
 						$.messager.alert("警告", "下架项目失败。", "warn");
+					}
+				}, "json");
+			}
+		});
+	}
+
+	function topUp(id) {
+		$.messager.confirm('确认对话框', '您确认要置顶吗？', function(r) {
+			if (r) {
+				$.post("${ctx}/project/topProject", {
+					id : id
+				}, function(data, textStatus) {
+					if (data.code == 0) {
+						$.messager.alert("消息", "置顶项目成功。", "info", function() {
+							window.location = "${ctx}/project";
+						});
+						$(".panel-tool-close").css("display", "none");
+
+					} else {
+						$.messager.alert("警告", "置顶项目失败。", "warn");
+					}
+				}, "json");
+			}
+		});
+	}
+	function cTop(id) {
+		$.messager.confirm('确认对话框', '您确认要取消置顶吗？', function(r) {
+			if (r) {
+				$.post("${ctx}/project/cancelTopProject", {
+					id : id
+				}, function(data, textStatus) {
+					if (data.code == 0) {
+						$.messager.alert("消息", "取消置顶项目成功。", "info", function() {
+							window.location = "${ctx}/project";
+						});
+						$(".panel-tool-close").css("display", "none");
+
+					} else {
+						$.messager.alert("警告", "取消置顶项目失败。", "warn");
 					}
 				}, "json");
 			}
