@@ -36,6 +36,7 @@ public class GetProjectListResp extends ResponseBody {
 		private Long attentionCount;// 关注数
 		private String attentionFlag = "N";// 是否已关注 Y N
 		private String amtType;// 货币类型
+		private String top;
 
 		private List<Image> images = new ArrayList<Image>();
 
@@ -133,6 +134,14 @@ public class GetProjectListResp extends ResponseBody {
 
 		public void setImages(List<Image> images) {
 			this.images = images;
+		}
+
+		public String getTop() {
+			return top;
+		}
+
+		public void setTop(String top) {
+			this.top = top;
 		}
 
 		public static class Image {
